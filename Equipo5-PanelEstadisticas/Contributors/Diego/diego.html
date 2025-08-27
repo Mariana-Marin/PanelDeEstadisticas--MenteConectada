@@ -89,53 +89,148 @@
             <span class="material-icons hidden dark:block">dark_mode</span>
         </button>
     </header>
-    <main class="principal">
-        <section>
-           <!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Contador de Sesiones</title>
-  <link rel="stylesheet" href="/Equipo5-PanelEstadisticas/Contributors/Diego/style.css" />
-</head>
-<body>
-  <div class="card">
-    <h2>Bienvenido 👋</h2>
-    <p class="description">Iniciaste sesión las siguientes veces:</p>
-    <div id="counter" class="counter">0</div>
-    <button id="loginBtn">Iniciar sesión</button>
-    <button id="landingBtn" href="/Equipo5-PanelEstadisticas/landing/index.html">Volver</button>
-  </div>
+    <main>
+        <section class="pt-36 px-8">
+            <div class="flex items-center justify-center">
+                <div class="card bg-white p-8 rounded-lg shadow-lg flex flex-col items-center">
+                    <h2 class="text-2xl font-bold mb-4">Bienvenido 👋</h2>
+                    <p class="description mb-2">Iniciaste sesión las siguientes veces:</p>
+                    <div id="counter" class="counter text-4xl font-mono mb-6">0</div>
+                    <div class="flex gap-4">
+                        <button id="landingBtn" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition">Volver</button>
+                        <button id="exitBtn" class="px-4 py-2 bg-gray-600 text-white rounded hover:bg-gray-700 transition">Salir</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Historial de eventos asistidos -->
+        <section id="historial" class="pt-8 px-8 pb-16">
+            <div class="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto dark:bg-[#0f1720]">
+                <h2 class="text-2xl font-bold mb-4 text-center text-gray-800 dark:text-gray-100">Historial de Eventos Asistidos</h2>
+                <p class="text-sm text-center mb-4 text-gray-600 dark:text-gray-300">Haz clic en "Fecha" para ordenar por fecha.</p>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th id="fechaHeader" class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider cursor-pointer select-none">
+                                    Fecha <span id="fechaSortIcon" class="inline-block ml-1 text-sm">⬆</span>
+                                </th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Título</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Duración</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-700 dark:text-gray-300 uppercase tracking-wider">Modalidad</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventosBody" class="bg-white divide-y divide-gray-100 dark:bg-transparent dark:divide-gray-700">
 
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
 
-  <script>
+    <script>
+        // Navegar al landing
+        const landingBtn = document.getElementById('landingBtn');
+        if (landingBtn) {
+            landingBtn.addEventListener('click', function() {
+                window.location.href = '/Equipo5-PanelEstadisticas/landing/index.html';
+            });
+        }
 
-    document.getElementById('landingBtn').addEventListener('click', function() {
-  window.location.href = '/Equipo5-PanelEstadisticas/landing/index.html';
-});
-    let contador = 0;
+        // Cargar y mostrar contador desde localStorage
+        const counterEl = document.getElementById('counter');
+        const stored = localStorage.getItem('contadorSesion');
+        let contador = stored !== null ? Number(stored) : 0;
+        if (counterEl) counterEl.textContent = contador;
 
-    document.getElementById('loginBtn').addEventListener('click', () => {
-      contador++;
-      document.getElementById('counter').textContent = contador;
+        // Botón salir: reinicia el contador
+        const exitBtn = document.getElementById('exitBtn');
+        if (exitBtn) {
+            exitBtn.addEventListener('click', function(){
+                localStorage.setItem('contadorSesion', 0);
+                if (counterEl) counterEl.textContent = 0;
+            });
+        }
+    </script>
 
-      
-    });
-  </script>
-  <script>
+    <script>
+        // Listener del toggle de tema (mantenido del documento original)
         document.addEventListener('DOMContentLoaded', () => {
             const toggle = document.getElementById('theme-toggle');
-            toggle.addEventListener('click', () => {
-                document.documentElement.classList.toggle('dark');
-                if (document.documentElement.classList.contains('dark')) {
-                    localStorage.setItem('color-theme', 'dark');
-                } else {
-                    localStorage.setItem('color-theme', 'light');
-                }
-            });
+            if (toggle) {
+                toggle.addEventListener('click', () => {
+                    document.documentElement.classList.toggle('dark');
+                    if (document.documentElement.classList.contains('dark')) {
+                        localStorage.setItem('color-theme', 'dark');
+                    } else {
+                        localStorage.setItem('color-theme', 'light');
+                    }
+                });
+            }
         });
     </script>
-</body>
 
+    <!-- Script para Historial de Eventos (separado, sin interferir con otros scripts) -->
+    <script>
+        (function(){
+            // Datos ampliados de ejemplo
+            const eventos = [
+                { fecha: '2025-08-20', titulo: 'Taller de Mindfulness', duracion: '2h', modalidad: 'Presencial' },
+                { fecha: '2025-07-15', titulo: 'Charla de Autoestima', duracion: '1.5h', modalidad: 'Online' },
+                { fecha: '2025-08-10', titulo: 'Sesión grupal', duracion: '2h', modalidad: 'Presencial' },
+                { fecha: '2025-06-30', titulo: 'Webinar de Estrés', duracion: '1h', modalidad: 'Online' },
+                { fecha: '2025-05-22', titulo: 'Taller de Respiración', duracion: '1.5h', modalidad: 'Híbrida' },
+                { fecha: '2025-04-12', titulo: 'Taller de Gestión emocional', duracion: '3h', modalidad: 'Presencial' },
+                { fecha: '2025-08-25', titulo: 'Retiro de Bienestar', duracion: '6h', modalidad: 'Presencial' }
+            ];
+
+            let ascendente = false; // mostrar los más recientes primero por defecto
+
+            // Convierte YYYY-MM-DD a timestamp para ordenar correctamente
+            function fechaATimestamp(fecha) {
+                const parts = fecha.split('-');
+                return new Date(Number(parts[0]), Number(parts[1]) - 1, Number(parts[2])).getTime();
+            }
+
+            function renderTabla() {
+                const tbody = document.getElementById('eventosBody');
+                if (!tbody) return;
+                tbody.innerHTML = '';
+                eventos.forEach(ev => {
+                    const tr = document.createElement('tr');
+                    tr.className = 'hover:bg-gray-50 dark:hover:bg-gray-900';
+                    tr.innerHTML = `\
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">${ev.fecha}</td>\
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800 dark:text-gray-100">${ev.titulo}</td>\
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">${ev.duracion}</td>\
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-700 dark:text-gray-200">${ev.modalidad}</td>\
+                    `;
+                    tbody.appendChild(tr);
+                });
+            }
+
+            function ordenarPorFecha() {
+                eventos.sort((a, b) => {
+                    return ascendente ? fechaATimestamp(a.fecha) - fechaATimestamp(b.fecha) : fechaATimestamp(b.fecha) - fechaATimestamp(a.fecha);
+                });
+                const icon = document.getElementById('fechaSortIcon');
+                if (icon) icon.textContent = ascendente ? '⬆' : '⬇';
+                ascendente = !ascendente;
+                renderTabla();
+            }
+
+            // Inicial
+            document.addEventListener('DOMContentLoaded', function(){
+                // ordenar inicialmente
+                eventos.sort((a,b) => fechaATimestamp(b.fecha) - fechaATimestamp(a.fecha));
+                renderTabla();
+
+                const header = document.getElementById('fechaHeader');
+                if (header) header.addEventListener('click', ordenarPorFecha);
+            });
+        })();
+    </script>
+
+</body>
 </html>
